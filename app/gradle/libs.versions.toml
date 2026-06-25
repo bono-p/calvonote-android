@@ -1,0 +1,11 @@
+# ══════════════════════════════════════════════════════════════════════════
+#  CalvoNote Mobile — gradle/libs.versions.toml
+# ══════════════════════════════════════════════════════════════════════════
+
+[versions]
+agp         = "8.2.2"
+kotlin      = "1.9.22"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android      = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
