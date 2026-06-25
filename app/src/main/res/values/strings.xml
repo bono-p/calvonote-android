@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ══════════════════════════════════════════════════════════════════════
+     CalvoNote Mobile — res/values/strings.xml
+     DevLab · 2026
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<resources>
+    <string name="app_name">CalvoNote</string>
+    <string name="subtitle">Transcription vocale offline · DevLab</string>
+
+    <!-- Bloc-note -->
+    <string name="hint_note">Votre transcription apparaît ici…</string>
+
+    <!-- Statuts -->
+    <string name="status_ready">Prêt — appuyez sur Démarrer</string>
+    <string name="status_loading">⏳ Chargement du modèle…</string>
+    <string name="status_listening">🎙 Écoute en cours…</string>
+    <string name="status_stopped">⏹ Arrêté</string>
+
+    <!-- Boutons -->
+    <string name="btn_start">⏺  Démarrer</string>
+    <string name="btn_stop">⏹  Arrêter</string>
+    <string name="btn_copy">⎘  Copier</string>
+    <string name="btn_clear">✕  Effacer</string>
+
+    <!-- Messages -->
+    <string name="msg_copied">Texte copié dans le presse-papier</string>
+    <string name="msg_cleared">Note effacée</string>
+    <string name="msg_nothing_to_copy">Rien à copier</string>
+    <string name="msg_perm_denied">Permission microphone refusée</string>
+    <string name="msg_perm_required">L\'accès au microphone est requis pour la transcription</string>
+</resources>

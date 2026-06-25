@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ══════════════════════════════════════════════════════════════════════
+     CalvoNote Mobile — res/layout/activity_main.xml
+     Interface : bloc-note + bouton démarrer/arrêter
+     DevLab · 2026
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:padding="16dp">
+
+    <!-- ── En-tête ────────────────────────────────────────────────────── -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/title_text"
+        android:letterSpacing="0.05"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/subtitle"
+        android:textSize="12sp"
+        android:textColor="@color/text_muted"
+        android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Séparateur ─────────────────────────────────────────────────── -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Bloc-note (texte final) ────────────────────────────────────── -->
+    <ScrollView
+        android:id="@+id/scrollNote"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/surface"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintBottom_toTopOf="@id/tvPartial"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/text"
+            android:lineSpacingMultiplier="1.4"
+            android:hint="@string/hint_note"
+            android:textColorHint="@color/text_muted"
+            android:textIsSelectable="true" />
+
+    </ScrollView>
+
+    <!-- ── Résultat partiel (temps réel) ─────────────────────────────── -->
+    <TextView
+        android:id="@+id/tvPartial"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="36dp"
+        android:textSize="13sp"
+        android:textColor="@color/text_muted"
+        android:textStyle="italic"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintBottom_toTopOf="@id/tvStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Statut ─────────────────────────────────────────────────────── -->
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/status_ready"
+        android:textSize="11sp"
+        android:textColor="@color/accent"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/btnRecord"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Bouton principal Démarrer / Arrêter ────────────────────────── -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRecord"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:text="@string/btn_start"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/on_accent"
+        android:backgroundTint="@color/accent"
+        android:layout_marginBottom="10dp"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toTopOf="@id/layoutActions"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Actions secondaires : Copier + Effacer ────────────────────── -->
+    <LinearLayout
+        android:id="@+id/layoutActions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCopy"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/btn_copy"
+            android:textColor="@color/accent"
+            app:strokeColor="@color/accent"
+            app:cornerRadius="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClear"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="@string/btn_clear"
+            android:textColor="@color/err"
+            app:strokeColor="@color/err"
+            app:cornerRadius="10dp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

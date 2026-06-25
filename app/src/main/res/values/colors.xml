@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ══════════════════════════════════════════════════════════════════════
+     CalvoNote Mobile — res/values/colors.xml
+     Palette cohérente avec CalvoNote Desktop (thème dark)
+     DevLab · 2026
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<resources>
+    <!-- Fond principal -->
+    <color name="bg">#1E1E2E</color>
+    <!-- Surface (bloc-note) -->
+    <color name="surface">#252535</color>
+    <!-- Bordure -->
+    <color name="border">#484860</color>
+
+    <!-- Texte principal -->
+    <color name="text">#CDD6F4</color>
+    <!-- Texte secondaire / muted -->
+    <color name="text_muted">#585872</color>
+    <!-- Titre -->
+    <color name="title_text">#FFFFFF</color>
+
+    <!-- Accent (bouton démarrer, statut) -->
+    <color name="accent">#89B4FA</color>
+    <!-- Texte sur fond accent -->
+    <color name="on_accent">#1E1E2E</color>
+
+    <!-- Enregistrement actif -->
+    <color name="rec_on">#F38BA8</color>
+    <!-- Erreur -->
+    <color name="err">#F38BA8</color>
+    <!-- OK -->
+    <color name="ok">#A6E3A1</color>
+
+    <!-- Requis par Material Theme -->
+    <color name="purple_200">#89B4FA</color>
+    <color name="purple_500">#89B4FA</color>
+    <color name="purple_700">#6BA3FA</color>
+    <color name="teal_200">#A6E3A1</color>
+    <color name="teal_700">#A6E3A1</color>
+    <color name="black">#1E1E2E</color>
+    <color name="white">#FFFFFF</color>
+</resources>
