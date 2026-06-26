@@ -15,13 +15,14 @@ workflows:
 
     scripts:
       # ── Étape 1 : rendre Gradle exécutable ──────────────────────────────
-      - name: Permissions Gradle
+      - name: Generate Gradle wrapper
         script: |
-          chmod +x gradlew
+          gradle wrapper --gradle-version 8.2
 
       # ── Étape 2 : compilation APK debug ─────────────────────────────────
       - name: Build APK debug
         script: |
+          chmod +x gradlew
           ./gradlew assembleDebug \
             --stacktrace \
             --no-daemon
