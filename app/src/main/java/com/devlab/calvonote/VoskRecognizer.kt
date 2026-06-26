@@ -14,9 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.vosk.Model
 import org.vosk.Recognizer
-import org.vosk.android.StorageService
 import java.io.File
-import java.io.IOException
 
 // ── Callbacks vers MainActivity ───────────────────────────────────────────
 
@@ -28,10 +26,10 @@ interface RecognitionListener {
 }
 
 enum class RecognizerStatus {
-    IDLE,       // inactif
-    LOADING,    // chargement du modèle
-    LISTENING,  // écoute active
-    STOPPED     // arrêté
+    IDLE,        // inactif
+    LOADING,     // chargement du modèle
+    LISTENING,   // écoute active
+    STOPPED      // arrêté
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -46,15 +44,17 @@ class VoskRecognizer(
     companion object {
         private const val SAMPLE_RATE   = 16000
         private const val MODEL_NAME    = "vosk-model-small-fr-0.22"
-        private const val BUFFER_SIZE_S = 0.25f   // 250 ms de buffer
+        private const val BUFFER_SIZE_S = 0.25f
     }
 
     private var model       : Model?       = null
     private var recognizer  : Recognizer?  = null
     private var audioRecord : AudioRecord? = null
-    private var isListening = false
 
-    // ── Initialisation du modèle (à appeler une seule fois) ───────────────
+    // ── @Volatile : visible immédiatement depuis le thread audio ──────────
+    @Volatile private var isListening = false
+
+    // ── Initialisation du modèle ──────────────────────────────────────────
 
     suspend fun init() = withContext(Dispatchers.IO) {
         listener.onStatusChange(RecognizerStatus.LOADING)
@@ -67,20 +67,38 @@ class VoskRecognizer(
         }
     }
 
-    // ── Prépare le modèle (copie assets → stockage interne si besoin) ─────
+    // ── Copie SYNCHRONE des assets vers filesDir ──────────────────────────
+    //  (remplace StorageService.unpack() qui est asynchrone et causait le crash)
 
     private fun prepareModel(): File {
         val dest = File(context.filesDir, MODEL_NAME)
-        if (dest.exists() && dest.isDirectory) {
-            // Déjà copié lors d'un lancement précédent
-            return dest
+        if (dest.exists() && dest.isDirectory && dest.list()?.isNotEmpty() == true) {
+            return dest  // Déjà copié lors d'un lancement précédent
         }
-        // Copie depuis assets/ vers filesDir (une seule fois)
-        StorageService.unpack(context, MODEL_NAME, MODEL_NAME,
-            { /* progress — ignoré ici */ },
-            { e -> throw IOException("Décompression modèle échouée : ${e.message}") }
-        )
+        dest.deleteRecursively()
+        copyAssetDir(MODEL_NAME, dest)
         return dest
+    }
+
+    private fun copyAssetDir(assetPath: String, destDir: File) {
+        destDir.mkdirs()
+        val entries = context.assets.list(assetPath) ?: return
+        for (name in entries) {
+            val subAsset = "$assetPath/$name"
+            val destFile = File(destDir, name)
+            val children = context.assets.list(subAsset)
+            if (!children.isNullOrEmpty()) {
+                // Sous-dossier → récursion
+                copyAssetDir(subAsset, destFile)
+            } else {
+                // Fichier → copie directe
+                context.assets.open(subAsset).use { input ->
+                    destFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+            }
+        }
     }
 
     // ── Démarrer l'écoute ─────────────────────────────────────────────────
@@ -88,11 +106,12 @@ class VoskRecognizer(
     fun start() {
         if (isListening || model == null) return
 
-        val bufferSize = AudioRecord.getMinBufferSize(
+        val minBuf = AudioRecord.getMinBufferSize(
             SAMPLE_RATE,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT
-        ).coerceAtLeast((SAMPLE_RATE * BUFFER_SIZE_S * 2).toInt())
+        )
+        val bufferSize = minBuf.coerceAtLeast((SAMPLE_RATE * BUFFER_SIZE_S * 2).toInt())
 
         recognizer = Recognizer(model, SAMPLE_RATE.toFloat())
 
@@ -113,14 +132,11 @@ class VoskRecognizer(
         audioRecord?.startRecording()
         listener.onStatusChange(RecognizerStatus.LISTENING)
 
-        // Boucle de lecture audio dans un thread dédié
         Thread {
             val buf = ShortArray(bufferSize / 2)
             while (isListening) {
                 val read = audioRecord?.read(buf, 0, buf.size) ?: 0
-                if (read > 0) {
-                    processChunk(buf, read)
-                }
+                if (read > 0) processChunk(buf, read)
             }
         }.apply {
             isDaemon = true
@@ -133,7 +149,6 @@ class VoskRecognizer(
     private fun processChunk(buf: ShortArray, size: Int) {
         val rec = recognizer ?: return
 
-        // Conversion Short → ByteArray (little-endian, int16)
         val bytes = ByteArray(size * 2)
         for (i in 0 until size) {
             bytes[i * 2]     = (buf[i].toInt() and 0xFF).toByte()
@@ -141,19 +156,11 @@ class VoskRecognizer(
         }
 
         if (rec.acceptWaveForm(bytes, bytes.size)) {
-            // Résultat final — phrase complète
-            val result = rec.result
-            val text   = extractText(result, "text")
-            if (text.isNotBlank()) {
-                listener.onFinalResult(text)
-            }
+            val text = extractText(rec.result, "text")
+            if (text.isNotBlank()) listener.onFinalResult(text)
         } else {
-            // Résultat partiel — mot en cours
-            val partial = rec.partialResult
-            val text    = extractText(partial, "partial")
-            if (text.isNotBlank()) {
-                listener.onPartialResult(text)
-            }
+            val text = extractText(rec.partialResult, "partial")
+            if (text.isNotBlank()) listener.onPartialResult(text)
         }
     }
 
@@ -177,13 +184,11 @@ class VoskRecognizer(
         model = null
     }
 
-    // ── Utilitaire : extraire un champ du JSON Vosk ───────────────────────
+    // ── Extraire un champ du JSON Vosk avec JSONObject (plus fiable) ──────
 
     private fun extractText(json: String, key: String): String {
         return try {
-            // JSON Vosk : {"text": "bonjour"} ou {"partial": "bon"}
-            val pattern = Regex("\"$key\"\\s*:\\s*\"([^\"]*)\"")
-            pattern.find(json)?.groupValues?.get(1)?.trim() ?: ""
+            org.json.JSONObject(json).optString(key, "").trim()
         } catch (e: Exception) {
             ""
         }
