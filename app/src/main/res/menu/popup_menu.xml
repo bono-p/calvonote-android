@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/popup_spellcheck"   android:title="@string/menu_spellcheck" />
+    <item android:id="@+id/popup_select_all"   android:title="@string/menu_select_all" />
+    <item android:id="@+id/popup_font_plus"    android:title="@string/menu_font_plus" />
+    <item android:id="@+id/popup_font_minus"   android:title="@string/menu_font_minus" />
+    <item android:id="@+id/popup_clear_format" android:title="@string/menu_clear_format" />
+</menu>

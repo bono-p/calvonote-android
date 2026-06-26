@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ══════════════════════════════════════════════════════════════════════
-     CalvoNote Mobile — res/values/strings.xml
-     DevLab · 2026
-     ══════════════════════════════════════════════════════════════════════ -->
-
+<!-- CalvoNote Mobile — res/values/strings.xml — DevLab · 2026 -->
 <resources>
     <string name="app_name">CalvoNote</string>
     <string name="subtitle">Transcription vocale offline · DevLab</string>
 
     <!-- Bloc-note -->
-    <string name="hint_note">Votre transcription apparaît ici…</string>
+    <string name="hint_note">Votre transcription apparaît ici… ou saisissez directement.</string>
 
     <!-- Statuts -->
     <string name="status_ready">Prêt — appuyez sur Démarrer</string>
@@ -29,4 +25,18 @@
     <string name="msg_nothing_to_copy">Rien à copier</string>
     <string name="msg_perm_denied">Permission microphone refusée</string>
     <string name="msg_perm_required">L\'accès au microphone est requis pour la transcription</string>
+
+    <!-- Menu hamburger -->
+    <string name="menu_spellcheck">Correction orthographique</string>
+    <string name="menu_select_all">Sélectionner tout</string>
+    <string name="menu_font_plus">Texte plus grand</string>
+    <string name="menu_font_minus">Texte plus petit</string>
+    <string name="menu_clear_format">Effacer le surlignage</string>
+
+    <!-- Correcteur -->
+    <string name="msg_spell_checking">Vérification en cours…</string>
+    <string name="msg_spell_done">Correction terminée ✓</string>
+    <string name="msg_nothing_to_check">Rien à corriger</string>
+    <string name="msg_spell_unavailable">Correcteur orthographique non disponible</string>
+    <string name="msg_format_cleared">Surlignage effacé</string>
 </resources>
